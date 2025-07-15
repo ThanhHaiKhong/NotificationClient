@@ -73,6 +73,21 @@ extension NotificationClient {
 			case readAt = "read_at"
 			case deletedAt = "deleted_at"
 		}
+		
+		public init(from decoder: Decoder) throws {
+			let container = try decoder.container(keyedBy: CodingKeys.self)
+			id = try container.decode(String.self, forKey: .id)
+			refId = try container.decode(String.self, forKey: .refId)
+			category = try container.decode(Int.self, forKey: .category)
+			title = try container.decode(String.self, forKey: .title)
+			body = try container.decode(String.self, forKey: .body)
+			content = try container.decodeIfPresent(String.self, forKey: .content) ?? ""
+			uid = try container.decode(String.self, forKey: .uid)
+			createdAt = try container.decode(Date.self, forKey: .createdAt)
+			updatedAt = try container.decode(Date.self, forKey: .updatedAt)
+			readAt = try container.decodeIfPresent(Date.self, forKey: .readAt)
+			deletedAt = try container.decodeIfPresent(Date.self, forKey: .deletedAt)
+		}
 	}
 }
 
@@ -88,7 +103,7 @@ extension NotificationClient.Notification {
 
 extension NotificationClient {
 	public struct RegisterConfiguration: Sendable {
-		public let address: String       // fcm token, email, etc.
+		public let address: String       // fcmToken, email, etc.
 		public let uid: String           // user id
 		public let transport: Transport
 		public let namespace: String
@@ -114,13 +129,13 @@ extension NotificationClient {
 			self.token = token
 		}
 		
-		public enum Transport: Int, Codable, Sendable {
-			case none = 0
-			case system = 1
-			case firebase = 2
-			case sendGrid = 4
-			case telegram = 8
-			case discord = 16
+		public enum Transport: String, Codable, Sendable {
+			case none = "NONE"
+			case system = "SYSTEM"
+			case firebase = "FIREBASE"
+			case sendGrid = "SEND_GRID"
+			case telegram = "TELEGRAM"
+			case discord = "DISCORD"
 		}
 		
 		public enum OSType: String, Codable, Sendable {
@@ -150,7 +165,7 @@ extension NotificationClient.RegisterConfiguration {
 			let body = RegisterBody(
 				address: address,
 				uid: uid,
-				transport: transport.rawValue.description.uppercased(), // "FIREBASE"
+				transport: transport.rawValue.uppercased(), // "FIREBASE"
 				options: .init(namespace: namespace, bundle: bundle),
 				os: os.rawValue
 			)
@@ -522,7 +537,7 @@ extension NotificationClient.SetEnabledConfiguration {
 // MARK: - GetStatuses
 
 extension NotificationClient {
-	public struct StatusConfiguration: Sendable {
+	public struct UnreadConfiguration: Sendable {
 		public let userId: String
 		public let namespace: String
 		public let bundle: String
@@ -542,7 +557,7 @@ extension NotificationClient {
 	}
 }
 
-extension NotificationClient.StatusConfiguration {
+extension NotificationClient.UnreadConfiguration {
 	public var request: NetworkClient.Request {
 		get {
 			let endpoint = NetworkClient.Request.Endpoint(
@@ -567,7 +582,24 @@ extension NotificationClient.StatusConfiguration {
 }
 
 extension NotificationClient {
-	public struct StatusResponse: Decodable, Sendable {
+	public struct UnreadResponse: Decodable, Sendable {
 		public let unread: Int
+		
+		public init(from decoder: Decoder) throws {
+			let container = try decoder.container(keyedBy: CodingKeys.self)
+			
+			if let intValue = try? container.decode(Int.self, forKey: .unread) {
+				unread = intValue
+			} else if let stringValue = try? container.decode(String.self, forKey: .unread),
+					  let intFromString = Int(stringValue) {
+				unread = intFromString
+			} else {
+				throw DecodingError.dataCorruptedError(forKey: .unread, in: container, debugDescription: "Unread value is not an Int or convertible String.")
+			}
+		}
+		
+		private enum CodingKeys: String, CodingKey {
+			case unread
+		}
 	}
 }

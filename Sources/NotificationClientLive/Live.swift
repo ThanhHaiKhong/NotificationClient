@@ -21,17 +21,17 @@ extension NotificationClient: DependencyKey {
 			deregister: { configuration in
 				try await actor.deregister(configuration)
 			},
-			getNotifications: { configuration in
-				try await actor.getNotifications(configuration)
+			deliveredNotifications: { configuration in
+				try await actor.deliveredNotifications(configuration)
 			},
-			getTopics: { configuration in
-				try await actor.getTopics(configuration)
+			deliveredTopics: { configuration in
+				try await actor.deliveredTopics(configuration)
 			},
 			markAsRead: { configuration in
 				try await actor.markAsRead(configuration)
 			},
-			deletes: { configuration in
-				try await actor.deletes(configuration)
+			removeDeliveredNotifications: { configuration in
+				try await actor.removeDeliveredNotifications(configuration)
 			},
 			enabledNotifications: { configuration in
 				try await actor.enabledNotifications(configuration)
@@ -39,8 +39,8 @@ extension NotificationClient: DependencyKey {
 			setEnabledNotifications: { configuration in
 				try await actor.setEnabledNotifications(configuration)
 			},
-			statusNotifications: { configuration in
-				try await actor.statusNotifications(configuration)
+			unreadNotifications: { configuration in
+				try await actor.unreadNotifications(configuration)
 			}
         )
     }()

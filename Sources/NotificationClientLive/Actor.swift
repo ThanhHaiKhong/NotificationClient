@@ -26,12 +26,12 @@ public actor NotificationActor {
 		try await service.deregister(configuration)
 	}
 	
-	public func getNotifications(_ configuration: NotificationClient.NotifiesConfiguration) async throws -> [NotificationClient.Notification] {
-		try await service.getNotifications(configuration)
+	public func deliveredNotifications(_ configuration: NotificationClient.NotifiesConfiguration) async throws -> [NotificationClient.Notification] {
+		try await service.deliveredNotifications(configuration)
 	}
 	
-	public func getTopics(_ configuration: NotificationClient.TopicsConfiguration) async throws -> [NotificationClient.Topic] {
-		try await service.getTopics(configuration)
+	public func deliveredTopics(_ configuration: NotificationClient.TopicsConfiguration) async throws -> [NotificationClient.Topic] {
+		try await service.deliveredTopics(configuration)
 	}
 	
 	public func enabledNotifications(_ configuration: NotificationClient.EnabledConfiguration) async throws -> NotificationClient.EnabledResponse {
@@ -46,12 +46,12 @@ public actor NotificationActor {
 		try await service.markAsRead(configuration)
 	}
 	
-	public func deletes(_ configuration: NotificationClient.DeleteConfiguration) async throws {
-		try await service.deletes(configuration)
+	public func removeDeliveredNotifications(_ configuration: NotificationClient.DeleteConfiguration) async throws {
+		try await service.removeDeliveredNotifications(configuration)
 	}
 	
-	public func statusNotifications(_ configuration: NotificationClient.StatusConfiguration) async throws -> NotificationClient.StatusResponse {
-		try await service.statusNotifications(configuration)
+	public func unreadNotifications(_ configuration: NotificationClient.UnreadConfiguration) async throws -> NotificationClient.UnreadResponse {
+		try await service.unreadNotifications(configuration)
 	}
 }
 
@@ -106,7 +106,7 @@ extension NotificationService {
 		}
 	}
 	
-	public func getNotifications(_ configuration: NotificationClient.NotifiesConfiguration) async throws -> [NotificationClient.Notification] {
+	public func deliveredNotifications(_ configuration: NotificationClient.NotifiesConfiguration) async throws -> [NotificationClient.Notification] {
 		let request = configuration.request
 		let response = try await networkClient.send(request)
 		
@@ -128,7 +128,7 @@ extension NotificationService {
 		}
 	}
 	
-	public func getTopics(_ configuration: NotificationClient.TopicsConfiguration) async throws -> [NotificationClient.Topic] {
+	public func deliveredTopics(_ configuration: NotificationClient.TopicsConfiguration) async throws -> [NotificationClient.Topic] {
 		let request = configuration.request
 		let response = try await networkClient.send(request)
 		
@@ -183,7 +183,7 @@ extension NotificationService {
 		}
 	}
 	
-	public func statusNotifications(_ configuration: NotificationClient.StatusConfiguration) async throws -> NotificationClient.StatusResponse {
+	public func unreadNotifications(_ configuration: NotificationClient.UnreadConfiguration) async throws -> NotificationClient.UnreadResponse {
 		let request = configuration.request
 		let response = try await networkClient.send(request)
 		
@@ -197,7 +197,7 @@ extension NotificationService {
 		
 		do {
 			let decoder = JSONDecoder()
-			return try decoder.decode(NotificationClient.StatusResponse.self, from: data)
+			return try decoder.decode(NotificationClient.UnreadResponse.self, from: data)
 		} catch {
 			throw NetworkClient.Error.decodingError(error)
 		}
@@ -225,7 +225,7 @@ extension NotificationService {
 		}
 	}
 	
-	public func deletes(_ configuration: NotificationClient.DeleteConfiguration) async throws {
+	public func removeDeliveredNotifications(_ configuration: NotificationClient.DeleteConfiguration) async throws {
 		let request = try configuration.request
 		let response = try await networkClient.send(request)
 		
