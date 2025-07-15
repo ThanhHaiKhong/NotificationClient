@@ -78,7 +78,9 @@ extension NotificationService {
 		let response = try await networkClient.send(request)
 		
 		if !response.metadata.status {
-			throw NetworkClient.Error.invalidResponse
+			if let code = response.metadata.code {
+				throw NetworkClient.Error.serverError(statusCode: code, data: response.rawData)
+			}
 		}
 		
 		guard let data = response.rawData else {
@@ -91,7 +93,9 @@ extension NotificationService {
 		let response = try await networkClient.send(request)
 		
 		if !response.metadata.status {
-			throw NetworkClient.Error.invalidResponse
+			if let code = response.metadata.code {
+				throw NetworkClient.Error.serverError(statusCode: code, data: response.rawData)
+			}
 		}
 		
 		guard let data = response.rawData else {
@@ -104,7 +108,9 @@ extension NotificationService {
 		let response = try await networkClient.send(request)
 		
 		if !response.metadata.status {
-			throw NetworkClient.Error.invalidResponse
+			if let code = response.metadata.code {
+				throw NetworkClient.Error.serverError(statusCode: code, data: response.rawData)
+			}
 		}
 		
 		guard let data = response.rawData else {
@@ -126,7 +132,9 @@ extension NotificationService {
 		let response = try await networkClient.send(request)
 		
 		if !response.metadata.status {
-			throw NetworkClient.Error.invalidResponse
+			if let code = response.metadata.code {
+				throw NetworkClient.Error.serverError(statusCode: code, data: response.rawData)
+			}
 		}
 		
 		guard let data = response.rawData else {
@@ -148,7 +156,9 @@ extension NotificationService {
 		let response = try await networkClient.send(request)
 		
 		if !response.metadata.status {
-			throw NetworkClient.Error.invalidResponse
+			if let code = response.metadata.code {
+				throw NetworkClient.Error.serverError(statusCode: code, data: response.rawData)
+			}
 		}
 		
 		guard let data = response.rawData else {
@@ -164,11 +174,13 @@ extension NotificationService {
 	}
 	
 	public func setNotificationSettings(_ configuration: NotificationClient.SettingsConfiguration) async throws {
-		let request = try configuration.request
+		let request = try configuration.enabledRequest
 		let response = try await networkClient.send(request)
 		
 		if !response.metadata.status {
-			throw NetworkClient.Error.invalidResponse
+			if let code = response.metadata.code {
+				throw NetworkClient.Error.serverError(statusCode: code, data: response.rawData)
+			}
 		}
 		
 		guard let data = response.rawData else {
@@ -181,7 +193,9 @@ extension NotificationService {
 		let response = try await networkClient.send(request)
 		
 		if !response.metadata.status {
-			throw NetworkClient.Error.invalidResponse
+			if let code = response.metadata.code {
+				throw NetworkClient.Error.serverError(statusCode: code, data: response.rawData)
+			}
 		}
 		
 		guard let data = response.rawData else {
@@ -201,7 +215,9 @@ extension NotificationService {
 		let response = try await networkClient.send(request)
 		
 		if !response.metadata.status {
-			throw NetworkClient.Error.invalidResponse
+			if let code = response.metadata.code {
+				throw NetworkClient.Error.serverError(statusCode: code, data: response.rawData)
+			}
 		}
 		
 		guard let data = response.rawData else {
@@ -223,7 +239,9 @@ extension NotificationService {
 		let response = try await networkClient.send(request)
 		
 		if !response.metadata.status {
-			throw NetworkClient.Error.invalidResponse
+			if let code = response.metadata.code {
+				throw NetworkClient.Error.serverError(statusCode: code, data: response.rawData)
+			}
 		}
 		
 		guard let data = response.rawData else {
