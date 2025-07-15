@@ -13,7 +13,7 @@ public struct NotificationClient: Sendable {
 	public var deliveredTopics: @Sendable (_ configuration: NotificationClient.TopicsConfiguration) async throws -> [NotificationClient.Topic]
 	public var markAsRead: @Sendable (_ configuration: NotificationClient.ReadConfiguration) async throws -> [NotificationClient.Notification]
 	public var removeDeliveredNotifications: @Sendable (_ configuration: NotificationClient.DeleteConfiguration) async throws -> Void
-	public var enabledNotifications: @Sendable (_ configuration: NotificationClient.EnabledConfiguration) async throws -> NotificationClient.EnabledResponse
-	public var setEnabledNotifications: @Sendable (_ configuration: NotificationClient.SetEnabledConfiguration) async throws -> Void
+	public var notificationSettings: @Sendable (_ configuration: NotificationClient.SettingsConfiguration) async throws -> NotificationClient.SettingsResponse
+	public var setNotificationSettings: @Sendable (_ configuration: NotificationClient.SettingsConfiguration) async throws -> Void
 	public var unreadNotifications: @Sendable (_ configuration: NotificationClient.UnreadConfiguration) async throws -> NotificationClient.UnreadResponse
 }

@@ -34,12 +34,12 @@ public actor NotificationActor {
 		try await service.deliveredTopics(configuration)
 	}
 	
-	public func enabledNotifications(_ configuration: NotificationClient.EnabledConfiguration) async throws -> NotificationClient.EnabledResponse {
-		try await service.enabledNotifications(configuration)
+	public func notificationSettings(_ configuration: NotificationClient.SettingsConfiguration) async throws -> NotificationClient.SettingsResponse {
+		try await service.notificationSettings(configuration)
 	}
 	
-	public func setEnabledNotifications(_ configuration: NotificationClient.SetEnabledConfiguration) async throws {
-		try await service.setEnabledNotifications(configuration)
+	public func setNotificationSettings(_ configuration: NotificationClient.SettingsConfiguration) async throws {
+		try await service.setNotificationSettings(configuration)
 	}
 	
 	public func markAsRead(_ configuration: NotificationClient.ReadConfiguration) async throws -> [NotificationClient.Notification] {
@@ -69,15 +69,8 @@ private final class NotificationService: NSObject, @unchecked Sendable {
 extension NotificationService {
     
     public func requestAuthorization(options: UNAuthorizationOptions) async throws -> Bool {
-        return try await withCheckedThrowingContinuation { continuation in
-            UNUserNotificationCenter.current().requestAuthorization(options: options) { granted, error in
-                if let error = error {
-                    continuation.resume(throwing: error)
-                } else {
-                    continuation.resume(returning: granted)
-                }
-            }
-        }
+		let notificationCenter = UNUserNotificationCenter.current()
+		return try await notificationCenter.requestAuthorization(options: options)
     }
 	
 	public func register(_ configuration: NotificationClient.RegisterConfiguration) async throws {
@@ -150,7 +143,7 @@ extension NotificationService {
 		}
 	}
 	
-	public func enabledNotifications(_ configuration: NotificationClient.EnabledConfiguration) async throws -> NotificationClient.EnabledResponse {
+	public func notificationSettings(_ configuration: NotificationClient.SettingsConfiguration) async throws -> NotificationClient.SettingsResponse {
 		let request = configuration.request
 		let response = try await networkClient.send(request)
 		
@@ -164,13 +157,13 @@ extension NotificationService {
 		
 		do {
 			let decoder = JSONDecoder()
-			return try decoder.decode(NotificationClient.EnabledResponse.self, from: data)
+			return try decoder.decode(NotificationClient.SettingsResponse.self, from: data)
 		} catch {
 			throw NetworkClient.Error.decodingError(error)
 		}
 	}
 	
-	public func setEnabledNotifications(_ configuration: NotificationClient.SetEnabledConfiguration) async throws {
+	public func setNotificationSettings(_ configuration: NotificationClient.SettingsConfiguration) async throws {
 		let request = try configuration.request
 		let response = try await networkClient.send(request)
 		

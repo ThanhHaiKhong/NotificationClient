@@ -432,16 +432,19 @@ extension NotificationClient.NotifiesConfiguration {
 // MARK: - GetNotificationSettings
 
 extension NotificationClient {
-	public struct EnabledConfiguration: Sendable {
+	public struct SettingsConfiguration: Sendable {
+		public let enabled: Bool
 		public let userId: String
 		public let namespace: String
 		public let token: String
 		
 		public init(
+			enabled: Bool = false,
 			userId: String,
 			namespace: String,
 			token: String
 		) {
+			self.enabled = enabled
 			self.userId = userId
 			self.namespace = namespace
 			self.token = token
@@ -449,7 +452,7 @@ extension NotificationClient {
 	}
 }
 
-extension NotificationClient.EnabledConfiguration {
+extension NotificationClient.SettingsConfiguration {
 	public var request: NetworkClient.Request {
 		get {
 			let endpoint = NetworkClient.Request.Endpoint(
@@ -472,39 +475,8 @@ extension NotificationClient.EnabledConfiguration {
 			return NetworkClient.Request(endpoint: endpoint, payload: payload, configuration: .default)
 		}
 	}
-}
-
-extension NotificationClient {
-	public struct EnabledResponse: Decodable, Sendable {
-		public let enabled: Bool
-	}
-}
-
-// MARK: - SetNotificationSettings
-
-extension NotificationClient {
-	public struct SetEnabledConfiguration: Sendable {
-		public let userId: String
-		public let enabled: Bool
-		public let namespace: String
-		public let token: String
-		
-		public init(
-			userId: String,
-			enabled: Bool,
-			namespace: String,
-			token: String
-		) {
-			self.userId = userId
-			self.enabled = enabled
-			self.namespace = namespace
-			self.token = token
-		}
-	}
-}
-
-extension NotificationClient.SetEnabledConfiguration {
-	public var request: NetworkClient.Request {
+	
+	public var enabledRequest: NetworkClient.Request {
 		get throws {
 			struct SetSettingsBody: Encodable {
 				struct Options: Encodable {
@@ -531,6 +503,12 @@ extension NotificationClient.SetEnabledConfiguration {
 			)
 			return NetworkClient.Request(endpoint: endpoint, payload: payload, configuration: .default)
 		}
+	}
+}
+
+extension NotificationClient {
+	public struct SettingsResponse: Decodable, Sendable {
+		public let enabled: Bool
 	}
 }
 

@@ -33,11 +33,11 @@ extension NotificationClient: DependencyKey {
 			removeDeliveredNotifications: { configuration in
 				try await actor.removeDeliveredNotifications(configuration)
 			},
-			enabledNotifications: { configuration in
-				try await actor.enabledNotifications(configuration)
+			notificationSettings: { configuration in
+				try await actor.notificationSettings(configuration)
 			},
-			setEnabledNotifications: { configuration in
-				try await actor.setEnabledNotifications(configuration)
+			setNotificationSettings: { configuration in
+				try await actor.setNotificationSettings(configuration)
 			},
 			unreadNotifications: { configuration in
 				try await actor.unreadNotifications(configuration)
